@@ -1,0 +1,71 @@
+---
+import { SITE_TITLE } from '../consts';
+import HeaderLink from './HeaderLink.astro';
+---
+
+<header>
+	<nav>
+		<h2><a href="/">{SITE_TITLE}</a></h2>
+		<div class="internal-links">
+			<HeaderLink href="/">Home</HeaderLink>
+			<HeaderLink href="/blog">Blog</HeaderLink>
+		</div>
+		<div class="tool-links">
+			<a href="https://klimp.taktfast.no" target="_blank" class="tool-link">Klimp</a>
+			<a href="https://taktfast.no" target="_blank" class="tool-link">Taktfast</a>
+		</div>
+	</nav>
+</header>
+<style>
+	header {
+		margin: 0;
+		padding: 0 1em;
+		background: white;
+		box-shadow: 0 2px 8px rgba(var(--black), 5%);
+	}
+	h2 {
+		margin: 0;
+		font-size: 1em;
+	}
+
+	h2 a,
+	h2 a.active {
+		text-decoration: none;
+	}
+	nav {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+	}
+	nav a {
+		padding: 1em 0.5em;
+		color: var(--black);
+		border-bottom: 4px solid transparent;
+		text-decoration: none;
+	}
+	nav a.active {
+		text-decoration: none;
+		border-bottom-color: var(--accent);
+	}
+	.tool-links {
+		display: flex;
+		gap: 0.5em;
+	}
+	.tool-link {
+		background: var(--accent);
+		color: white !important;
+		padding: 0.4em 0.8em !important;
+		border-radius: 6px;
+		font-size: 0.85em;
+		font-weight: 700;
+		border-bottom: none !important;
+	}
+	.tool-link:hover {
+		background: var(--accent-dark);
+	}
+	@media (max-width: 720px) {
+		.tool-links {
+			display: none;
+		}
+	}
+</style>

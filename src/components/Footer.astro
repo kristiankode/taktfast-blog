@@ -1,0 +1,32 @@
+---
+const today = new Date();
+---
+
+<footer>
+	&copy; {today.getFullYear()} Taktfast. All rights reserved.
+	<div class="footer-links">
+		<a href="https://klimp.taktfast.no">Klimp - Chord Chart Maker</a>
+		<a href="https://taktfast.no">Taktfast</a>
+	</div>
+</footer>
+<style>
+	footer {
+		padding: 2em 1em 6em 1em;
+		background: linear-gradient(var(--gray-gradient)) no-repeat;
+		color: rgb(var(--gray));
+		text-align: center;
+	}
+	.footer-links {
+		display: flex;
+		justify-content: center;
+		gap: 1.5em;
+		margin-top: 1em;
+	}
+	.footer-links a {
+		color: rgb(var(--gray));
+		font-size: 0.85em;
+	}
+	.footer-links a:hover {
+		color: rgb(var(--gray-dark));
+	}
+</style>

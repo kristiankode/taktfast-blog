@@ -1,0 +1,101 @@
+---
+import { getCollection } from 'astro:content';
+import BaseHead from '../components/BaseHead.astro';
+import Footer from '../components/Footer.astro';
+import FormattedDate from '../components/FormattedDate.astro';
+import Header from '../components/Header.astro';
+import { SITE_DESCRIPTION, SITE_TITLE } from '../consts';
+
+const posts = (await getCollection('blog')).sort(
+	(a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf(),
+);
+---
+
+<!doctype html>
+<html lang="en">
+	<head>
+		<BaseHead title={SITE_TITLE} description={SITE_DESCRIPTION} />
+	</head>
+	<body>
+		<Header />
+		<main>
+			<section class="hero">
+				<h1>Music Tools & Tips</h1>
+				<p>
+					Practical guides for musicians. Learn how to create chord charts, arrange songs,
+					and make the most of your band practice.
+				</p>
+			</section>
+			<section>
+				<h2>Latest Posts</h2>
+				<ul>
+					{
+						posts.map((post) => (
+							<li>
+								<a href={`/blog/${post.id}/`}>
+									<h4 class="title">{post.data.title}</h4>
+									<p class="date">
+										<FormattedDate date={post.data.pubDate} />
+									</p>
+									<p class="description">{post.data.description}</p>
+								</a>
+							</li>
+						))
+					}
+				</ul>
+			</section>
+		</main>
+		<Footer />
+	</body>
+</html>
+
+<style>
+	.hero {
+		text-align: center;
+		margin-bottom: 2em;
+	}
+	.hero h1 {
+		margin-bottom: 0.25em;
+	}
+	.hero p {
+		color: rgb(var(--gray));
+		font-size: 1.1em;
+	}
+	h2 {
+		margin-bottom: 1em;
+	}
+	ul {
+		list-style-type: none;
+		margin: 0;
+		padding: 0;
+		display: flex;
+		flex-direction: column;
+		gap: 1em;
+	}
+	ul li a {
+		display: block;
+		padding: 1.5em;
+		background: white;
+		border-radius: 12px;
+		box-shadow: 0 1px 4px rgba(var(--gray), 15%);
+		text-decoration: none;
+		transition: box-shadow 0.2s ease;
+	}
+	ul li a:hover {
+		box-shadow: var(--box-shadow);
+	}
+	.title {
+		margin: 0 0 0.25em 0;
+		color: rgb(var(--black));
+	}
+	.date {
+		margin: 0 0 0.5em 0;
+		color: rgb(var(--gray));
+		font-size: 0.85em;
+	}
+	.description {
+		margin: 0;
+		color: rgb(var(--gray-dark));
+		font-size: 0.95em;
+	}
+</style>
