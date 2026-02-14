@@ -24,6 +24,7 @@ const {
   pubDate,
   updatedDate,
   heroImage,
+  translationKey,
   lang = "en",
   languageLinks = [],
   alternateLinks = [],
@@ -40,7 +41,15 @@ const ctaButton = lang === "no" ? "Opne Klimp" : "Open Klimp";
 
 <html lang={lang}>
   <head>
-    <BaseHead title={title} description={description} />
+    <BaseHead
+      title={title}
+      description={description}
+      ogType="article"
+      pubDate={pubDate}
+      updatedDate={updatedDate}
+      image={heroImage ??
+        (translationKey ? `/og/${lang}/blog/${translationKey}.png` : undefined)}
+    />
     {
       alternateLinks.map((link) => (
         <link rel="alternate" hreflang={link.locale} href={link.href} />

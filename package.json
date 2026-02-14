@@ -3,7 +3,9 @@
   "type": "module",
   "version": "0.0.1",
   "scripts": {
-    "dev": "astro dev",
+    "generate:og": "node scripts/generate-og.mjs",
+    "dev": "npm run generate:og && astro dev",
+    "prebuild": "npm run generate:og",
     "build": "astro build",
     "preview": "astro preview",
     "astro": "astro"
@@ -13,6 +15,7 @@
     "@astrojs/rss": "^4.0.15",
     "@astrojs/sitemap": "^3.7.0",
     "astro": "^5.17.1",
+    "gray-matter": "^4.0.3",
     "sharp": "^0.34.3"
   }
 }
