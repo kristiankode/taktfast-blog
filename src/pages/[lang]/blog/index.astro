@@ -1,21 +1,39 @@
 ---
 import { getCollection } from "astro:content";
-import BaseHead from "../../components/BaseHead.astro";
-import Footer from "../../components/Footer.astro";
-import FormattedDate from "../../components/FormattedDate.astro";
-import Header from "../../components/Header.astro";
-import { SITE_DESCRIPTION, SITE_TITLE } from "../../consts";
+import BaseHead from "../../../components/BaseHead.astro";
+import Footer from "../../../components/Footer.astro";
+import FormattedDate from "../../../components/FormattedDate.astro";
+import Header from "../../../components/Header.astro";
+import { SITE_DESCRIPTION, SITE_TITLE } from "../../../consts";
 
+export async function getStaticPaths() {
+  return [{ params: { lang: "en" } }, { params: { lang: "no" } }];
+}
+
+const { lang } = Astro.params;
+const langKey = (lang === "no" ? "no" : "en") as "en" | "no";
+const locale = langKey === "no" ? "nn-NO" : "en-US";
+const isNorwegian = langKey === "no";
 const posts = (
-  await getCollection("blog", ({ data }) => data.locale === "en")
+  await getCollection("blog", ({ data }) => data.locale === langKey)
 ).sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
+
+const metaDescription = isNorwegian
+  ? "Siste blogginnlegg om akkordskjema, øving og låtstruktur."
+  : SITE_DESCRIPTION;
+const alternateHref = isNorwegian ? "/en/blog/" : "/no/blog/";
+const blogBase = isNorwegian ? "/no/blog" : "/en/blog";
 ---
 
 <!doctype html>
-<html lang="en">
+<html lang={langKey}>
   <head>
-    <BaseHead title={SITE_TITLE} description={SITE_DESCRIPTION} />
-    <link rel="alternate" hreflang="no" href="/no/blog/" />
+    <BaseHead title={SITE_TITLE} description={metaDescription} />
+    <link
+      rel="alternate"
+      hreflang={isNorwegian ? "en" : "no"}
+      href={alternateHref}
+    />
     <style>
       main {
         width: 960px;
@@ -80,17 +98,17 @@ const posts = (
     </style>
   </head>
   <body>
-    <Header lang="en" />
+    <Header lang={langKey} />
     <main>
       <section>
         <ul>
           {
             posts.map((post) => (
               <li>
-                <a href={`/blog/${post.data.translationKey}/`}>
+                <a href={`${blogBase}/${post.data.translationKey}/`}>
                   <h4 class="title">{post.data.title}</h4>
                   <p class="date">
-                    <FormattedDate date={post.data.pubDate} locale="en-US" />
+                    <FormattedDate date={post.data.pubDate} locale={locale} />
                   </p>
                 </a>
               </li>

@@ -1,12 +1,11 @@
 ---
 import { type CollectionEntry, getCollection, render } from "astro:content";
-import BlogPost from "../../layouts/BlogPost.astro";
+import BlogPost from "../../../layouts/BlogPost.astro";
 
 export async function getStaticPaths() {
   const posts = await getCollection("blog");
-  const englishPosts = posts.filter((post) => post.data.locale === "en");
 
-  return englishPosts.map((post) => {
+  return posts.map((post) => {
     const alternates = posts
       .filter(
         (entry) =>
@@ -16,27 +15,25 @@ export async function getStaticPaths() {
       .map((entry) => ({
         locale: entry.data.locale,
         label: entry.data.locale === "no" ? "Norsk" : "English",
-        href:
-          entry.data.locale === "no"
-            ? `/no/blog/${entry.data.translationKey}/`
-            : `/blog/${entry.data.translationKey}/`,
+        href: `/${entry.data.locale}/blog/${entry.data.translationKey}/`,
       }));
 
     const languageLinks = [
       {
         locale: post.data.locale,
         label: post.data.locale === "no" ? "Norsk" : "English",
-        href: `/blog/${post.data.translationKey}/`,
+        href: `/${post.data.locale}/blog/${post.data.translationKey}/`,
       },
       ...alternates,
     ];
 
     return {
-      params: { slug: post.data.translationKey },
+      params: { lang: post.data.locale, slug: post.data.translationKey },
       props: { post, alternates, languageLinks },
     };
   });
 }
+
 type LanguageLink = {
   label: string;
   href: string;

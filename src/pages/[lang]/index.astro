@@ -1,42 +1,62 @@
 ---
 import { getCollection } from "astro:content";
-import BaseHead from "../components/BaseHead.astro";
-import Footer from "../components/Footer.astro";
-import FormattedDate from "../components/FormattedDate.astro";
-import Header from "../components/Header.astro";
-import { SITE_DESCRIPTION, SITE_TITLE } from "../consts";
+import BaseHead from "../../components/BaseHead.astro";
+import Footer from "../../components/Footer.astro";
+import FormattedDate from "../../components/FormattedDate.astro";
+import Header from "../../components/Header.astro";
+import { SITE_TITLE, SITE_DESCRIPTION } from "../../consts";
 
+export async function getStaticPaths() {
+  return [{ params: { lang: "en" } }, { params: { lang: "no" } }];
+}
+
+const { lang } = Astro.params;
+const langKey = (lang === "no" ? "no" : "en") as "en" | "no";
+const locale = langKey === "no" ? "nn-NO" : "en-US";
+const isNorwegian = langKey === "no";
 const posts = (
-  await getCollection("blog", ({ data }) => data.locale === "en")
+  await getCollection("blog", ({ data }) => data.locale === langKey)
 ).sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
+
+const heroTitle = isNorwegian ? "Musikkverktøy og tips" : "Music Tools & Tips";
+const heroDescription = isNorwegian
+  ? "Praktiske guider for musikarar. Lær å lage akkordskjema, arrangere låtar, og få meir ut av bandøvinga."
+  : "Practical guides for musicians. Learn how to create chord charts, arrange songs, and make the most of your band practice.";
+const latestTitle = isNorwegian ? "Siste innlegg" : "Latest Posts";
+const metaDescription = isNorwegian
+  ? "Tips, verktøy og korte guider for musikarar — frå akkordskjema til låtstruktur og bandøving."
+  : SITE_DESCRIPTION;
+const alternateHref = isNorwegian ? "/en/" : "/no/";
+const blogBase = isNorwegian ? "/no/blog" : "/en/blog";
 ---
 
 <!doctype html>
-<html lang="en">
+<html lang={langKey}>
   <head>
-    <BaseHead title={SITE_TITLE} description={SITE_DESCRIPTION} />
-    <link rel="alternate" hreflang="no" href="/no/" />
+    <BaseHead title={SITE_TITLE} description={metaDescription} />
+    <link
+      rel="alternate"
+      hreflang={isNorwegian ? "en" : "no"}
+      href={alternateHref}
+    />
   </head>
   <body>
-    <Header lang="en" />
+    <Header lang={langKey} />
     <main>
       <section class="hero">
-        <h1>Music Tools & Tips</h1>
-        <p>
-          Practical guides for musicians. Learn how to create chord charts,
-          arrange songs, and make the most of your band practice.
-        </p>
+        <h1>{heroTitle}</h1>
+        <p>{heroDescription}</p>
       </section>
       <section>
-        <h2>Latest Posts</h2>
+        <h2>{latestTitle}</h2>
         <ul>
           {
             posts.map((post) => (
               <li>
-                <a href={`/blog/${post.data.translationKey}/`}>
+                <a href={`${blogBase}/${post.data.translationKey}/`}>
                   <h4 class="title">{post.data.title}</h4>
                   <p class="date">
-                    <FormattedDate date={post.data.pubDate} locale="en-US" />
+                    <FormattedDate date={post.data.pubDate} locale={locale} />
                   </p>
                   <p class="description">{post.data.description}</p>
                 </a>

@@ -1,92 +1,122 @@
 ---
-import { SITE_TITLE } from '../consts';
-import HeaderLink from './HeaderLink.astro';
+import { SITE_TITLE } from "../consts";
+import HeaderLink from "./HeaderLink.astro";
+
+interface Props {
+  lang?: "en" | "no";
+}
+
+const { lang = "en" } = Astro.props;
+const pathname = Astro.url.pathname;
+const isNorwegian = lang === "no";
+const isEnglishLocalized = pathname.startsWith("/en");
+const homeHref = isNorwegian ? "/no" : isEnglishLocalized ? "/en" : "/";
+const blogHref = isNorwegian
+  ? "/no/blog"
+  : isEnglishLocalized
+    ? "/en/blog"
+    : "/blog";
+const alternatePath = isNorwegian
+  ? pathname.replace(/^\/no(\/|$)/, "/en$1")
+  : pathname.startsWith("/en")
+    ? pathname.replace(/^\/en(\/|$)/, "/no$1")
+    : `/no${pathname === "/" ? "" : pathname}`;
+const alternateLabel = isNorwegian ? "English" : "Norsk";
 ---
 
 <header>
-	<nav>
-		<h2><a href="/">{SITE_TITLE}</a></h2>
-		<div class="internal-links">
-			<HeaderLink href="/">Home</HeaderLink>
-			<HeaderLink href="/blog">Blog</HeaderLink>
-		</div>
-		<div class="tool-links">
-			<a href="https://klimp.taktfast.no" target="_blank" class="tool-link">Klimp</a>
-			<a href="https://taktfast.no" target="_blank" class="tool-link">Taktfast</a>
-		</div>
-	</nav>
+  <nav>
+    <h2><a href={homeHref}>{SITE_TITLE}</a></h2>
+    <div class="internal-links">
+      <HeaderLink href={homeHref}>Home</HeaderLink>
+      <HeaderLink href={blogHref}>Blog</HeaderLink>
+    </div>
+    <div class="tool-links">
+      <a href={alternatePath} class="tool-link" aria-label={alternateLabel}>
+        {alternateLabel}
+      </a>
+      <a href="https://klimp.taktfast.no" target="_blank" class="tool-link"
+        >Klimp</a
+      >
+      <a href="https://taktfast.no" target="_blank" class="tool-link"
+        >Taktfast</a
+      >
+    </div>
+  </nav>
 </header>
 <style>
-	header {
-		margin: 0;
-		padding: 0 1em;
-		background: var(--glass-bg-strong);
-		backdrop-filter: var(--glass-blur);
-		-webkit-backdrop-filter: var(--glass-blur);
-		border-bottom: 1px solid var(--border-subtle);
-		position: sticky;
-		top: 0;
-		z-index: 100;
-	}
-	h2 {
-		margin: 0;
-		font-size: 1em;
-		font-weight: 600;
-	}
-	h2 a,
-	h2 a.active {
-		text-decoration: none;
-		color: rgba(15, 23, 42, 1);
-	}
-	nav {
-		display: flex;
-		align-items: center;
-		justify-content: space-between;
-		max-width: 960px;
-		margin: 0 auto;
-	}
-	nav a {
-		padding: 1em 0.5em;
-		color: rgba(71, 85, 105, 1);
-		border-bottom: 2px solid transparent;
-		text-decoration: none;
-		font-weight: 500;
-		font-size: 0.9em;
-		transition: color 0.15s ease, border-color 0.15s ease;
-	}
-	nav a:hover {
-		color: rgba(15, 23, 42, 1);
-	}
-	nav a.active {
-		text-decoration: none;
-		border-bottom-color: var(--accent);
-		color: rgba(15, 23, 42, 1);
-	}
-	.tool-links {
-		display: flex;
-		gap: 0.5em;
-	}
-	.tool-link {
-		background: var(--glass-bg);
-		backdrop-filter: var(--glass-blur);
-		-webkit-backdrop-filter: var(--glass-blur);
-		color: rgba(15, 23, 42, 1) !important;
-		padding: 6px 14px !important;
-		border-radius: 999px;
-		font-size: 0.8em;
-		font-weight: 600;
-		border: 1px solid var(--border-card) !important;
-		border-bottom: 1px solid var(--border-card) !important;
-		transition: all 0.15s ease;
-	}
-	.tool-link:hover {
-		background: var(--glass-bg-strong);
-		border-color: var(--accent-focus) !important;
-		box-shadow: var(--shadow-md);
-	}
-	@media (max-width: 720px) {
-		.tool-links {
-			display: none;
-		}
-	}
+  header {
+    margin: 0;
+    padding: 0 1em;
+    background: var(--glass-bg-strong);
+    backdrop-filter: var(--glass-blur);
+    -webkit-backdrop-filter: var(--glass-blur);
+    border-bottom: 1px solid var(--border-subtle);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+  h2 {
+    margin: 0;
+    font-size: 1em;
+    font-weight: 600;
+  }
+  h2 a,
+  h2 a.active {
+    text-decoration: none;
+    color: rgba(15, 23, 42, 1);
+  }
+  nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    max-width: 960px;
+    margin: 0 auto;
+  }
+  nav a {
+    padding: 1em 0.5em;
+    color: rgba(71, 85, 105, 1);
+    border-bottom: 2px solid transparent;
+    text-decoration: none;
+    font-weight: 500;
+    font-size: 0.9em;
+    transition:
+      color 0.15s ease,
+      border-color 0.15s ease;
+  }
+  nav a:hover {
+    color: rgba(15, 23, 42, 1);
+  }
+  nav a.active {
+    text-decoration: none;
+    border-bottom-color: var(--accent);
+    color: rgba(15, 23, 42, 1);
+  }
+  .tool-links {
+    display: flex;
+    gap: 0.5em;
+  }
+  .tool-link {
+    background: var(--glass-bg);
+    backdrop-filter: var(--glass-blur);
+    -webkit-backdrop-filter: var(--glass-blur);
+    color: rgba(15, 23, 42, 1) !important;
+    padding: 6px 14px !important;
+    border-radius: 999px;
+    font-size: 0.8em;
+    font-weight: 600;
+    border: 1px solid var(--border-card) !important;
+    border-bottom: 1px solid var(--border-card) !important;
+    transition: all 0.15s ease;
+  }
+  .tool-link:hover {
+    background: var(--glass-bg-strong);
+    border-color: var(--accent-focus) !important;
+    box-shadow: var(--shadow-md);
+  }
+  @media (max-width: 720px) {
+    .tool-links {
+      display: none;
+    }
+  }
 </style>

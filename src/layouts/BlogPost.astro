@@ -1,144 +1,229 @@
 ---
-import { Image } from 'astro:assets';
-import type { CollectionEntry } from 'astro:content';
-import BaseHead from '../components/BaseHead.astro';
-import Footer from '../components/Footer.astro';
-import FormattedDate from '../components/FormattedDate.astro';
-import Header from '../components/Header.astro';
+import { Image } from "astro:assets";
+import type { CollectionEntry } from "astro:content";
+import BaseHead from "../components/BaseHead.astro";
+import Footer from "../components/Footer.astro";
+import FormattedDate from "../components/FormattedDate.astro";
+import Header from "../components/Header.astro";
 
-type Props = CollectionEntry<'blog'>['data'];
+type LanguageLink = {
+  label: string;
+  href: string;
+  locale: "en" | "no";
+};
 
-const { title, description, pubDate, updatedDate, heroImage } = Astro.props;
+type Props = CollectionEntry<"blog">["data"] & {
+  lang?: "en" | "no";
+  languageLinks?: LanguageLink[];
+  alternateLinks?: LanguageLink[];
+};
+
+const {
+  title,
+  description,
+  pubDate,
+  updatedDate,
+  heroImage,
+  lang = "en",
+  languageLinks = [],
+  alternateLinks = [],
+} = Astro.props;
+const lastUpdatedLabel = lang === "no" ? "Sist oppdatert" : "Last updated on";
+const ctaTitle =
+  lang === "no" ? "Klar for å prøve sjølv?" : "Ready to try it yourself?";
+const ctaDescription =
+  lang === "no"
+    ? "Lag akkordskjema på sekund med Klimp — gratis, utan innlogging."
+    : "Create chord charts in seconds with Klimp — free, no signup required.";
+const ctaButton = lang === "no" ? "Opne Klimp" : "Open Klimp";
 ---
 
-<html lang="en">
-	<head>
-		<BaseHead title={title} description={description} />
-		<style>
-			main {
-				width: calc(100% - 2em);
-				max-width: 100%;
-				margin: 0;
-			}
-			.hero-image {
-				width: 100%;
-			}
-			.hero-image img {
-				display: block;
-				margin: 0 auto;
-				border-radius: 16px;
-			}
-			.article-card {
-				width: 720px;
-				max-width: calc(100% - 2em);
-				margin: 2em auto;
-				padding: 2em;
-				background: var(--glass-bg-strong);
-				backdrop-filter: var(--glass-blur);
-				-webkit-backdrop-filter: var(--glass-blur);
-				border: 1px solid var(--glass-border);
-				border-radius: 16px;
-				box-shadow: var(--shadow-sm);
-			}
-			.prose {
-				color: rgba(15, 23, 42, 1);
-			}
-			.title {
-				margin-bottom: 1.5em;
-				padding: 0 0 1em 0;
-				text-align: center;
-				line-height: 1;
-				border-bottom: 1px solid var(--border-subtle);
-			}
-			.title h1 {
-				margin: 0 0 0.5em 0;
-			}
-			.date {
-				margin-bottom: 0.5em;
-				color: rgba(71, 85, 105, 1);
-				font-size: 0.9em;
-			}
-			.last-updated-on {
-				font-style: italic;
-			}
-			.cta-box {
-				margin-top: 3em;
-				padding: 2em;
-				background: var(--glass-bg);
-				backdrop-filter: var(--glass-blur);
-				-webkit-backdrop-filter: var(--glass-blur);
-				border: 1px solid var(--border-card);
-				border-radius: 16px;
-				text-align: center;
-			}
-			.cta-box h3 {
-				margin-bottom: 0.3em;
-			}
-			.cta-box p {
-				color: rgba(71, 85, 105, 1);
-				margin-bottom: 1.5em;
-			}
-			.cta-button {
-				display: inline-block;
-				padding: 10px 24px;
-				background: var(--glass-bg);
-				backdrop-filter: var(--glass-blur);
-				-webkit-backdrop-filter: var(--glass-blur);
-				border: 1px solid var(--border-card);
-				color: rgba(15, 23, 42, 1);
-				font-weight: 600;
-				border-radius: 999px;
-				text-decoration: none;
-				font-size: 1em;
-				transition: all 0.15s ease;
-			}
-			.cta-button:hover {
-				background: var(--glass-bg-strong);
-				border-color: var(--accent-focus);
-				box-shadow: var(--shadow-md);
-				color: rgba(15, 23, 42, 1);
-			}
-			@media (max-width: 720px) {
-				.article-card {
-					margin: 1em auto;
-					padding: 1.25em;
-				}
-			}
-		</style>
-	</head>
+<html lang={lang}>
+  <head>
+    <BaseHead title={title} description={description} />
+    {
+      alternateLinks.map((link) => (
+        <link rel="alternate" hreflang={link.locale} href={link.href} />
+      ))
+    }
+    <style>
+      main {
+        width: calc(100% - 2em);
+        max-width: 100%;
+        margin: 0;
+      }
+      .hero-image {
+        width: 100%;
+      }
+      .hero-image img {
+        display: block;
+        margin: 0 auto;
+        border-radius: 16px;
+      }
+      .article-card {
+        width: 720px;
+        max-width: calc(100% - 2em);
+        margin: 2em auto;
+        padding: 2em;
+        background: var(--glass-bg-strong);
+        backdrop-filter: var(--glass-blur);
+        -webkit-backdrop-filter: var(--glass-blur);
+        border: 1px solid var(--glass-border);
+        border-radius: 16px;
+        box-shadow: var(--shadow-sm);
+      }
+      .prose {
+        color: rgba(15, 23, 42, 1);
+      }
+      .title {
+        margin-bottom: 1.5em;
+        padding: 0 0 1em 0;
+        text-align: center;
+        line-height: 1;
+        border-bottom: 1px solid var(--border-subtle);
+      }
+      .language-switcher {
+        display: flex;
+        justify-content: center;
+        gap: 0.5em;
+        margin-bottom: 1em;
+      }
+      .language-switcher a {
+        display: inline-block;
+        padding: 6px 14px;
+        border-radius: 999px;
+        border: 1px solid var(--border-card);
+        background: var(--glass-bg);
+        color: rgba(15, 23, 42, 1);
+        text-decoration: none;
+        font-size: 0.85em;
+        font-weight: 600;
+        transition: all 0.15s ease;
+      }
+      .language-switcher a:hover {
+        background: var(--glass-bg-strong);
+        border-color: var(--accent-focus);
+        box-shadow: var(--shadow-md);
+      }
+      .language-switcher a.active {
+        border-color: var(--accent);
+      }
+      .title h1 {
+        margin: 0 0 0.5em 0;
+      }
+      .date {
+        margin-bottom: 0.5em;
+        color: rgba(71, 85, 105, 1);
+        font-size: 0.9em;
+      }
+      .last-updated-on {
+        font-style: italic;
+      }
+      .cta-box {
+        margin-top: 3em;
+        padding: 2em;
+        background: var(--glass-bg);
+        backdrop-filter: var(--glass-blur);
+        -webkit-backdrop-filter: var(--glass-blur);
+        border: 1px solid var(--border-card);
+        border-radius: 16px;
+        text-align: center;
+      }
+      .cta-box h3 {
+        margin-bottom: 0.3em;
+      }
+      .cta-box p {
+        color: rgba(71, 85, 105, 1);
+        margin-bottom: 1.5em;
+      }
+      .cta-button {
+        display: inline-block;
+        padding: 10px 24px;
+        background: var(--glass-bg);
+        backdrop-filter: var(--glass-blur);
+        -webkit-backdrop-filter: var(--glass-blur);
+        border: 1px solid var(--border-card);
+        color: rgba(15, 23, 42, 1);
+        font-weight: 600;
+        border-radius: 999px;
+        text-decoration: none;
+        font-size: 1em;
+        transition: all 0.15s ease;
+      }
+      .cta-button:hover {
+        background: var(--glass-bg-strong);
+        border-color: var(--accent-focus);
+        box-shadow: var(--shadow-md);
+        color: rgba(15, 23, 42, 1);
+      }
+      @media (max-width: 720px) {
+        .article-card {
+          margin: 1em auto;
+          padding: 1.25em;
+        }
+      }
+    </style>
+  </head>
 
-	<body>
-		<Header />
-		<main>
-			<article>
-				<div class="hero-image">
-					{heroImage && <Image width={1020} height={510} src={heroImage} alt="" />}
-				</div>
-				<div class="article-card">
-					<div class="prose">
-						<div class="title">
-							<div class="date">
-								<FormattedDate date={pubDate} />
-								{
-									updatedDate && (
-										<div class="last-updated-on">
-											Last updated on <FormattedDate date={updatedDate} />
-										</div>
-									)
-								}
-							</div>
-							<h1>{title}</h1>
-						</div>
-						<slot />
-						<div class="cta-box">
-							<h3>Ready to try it yourself?</h3>
-							<p>Create chord charts in seconds with Klimp — free, no signup required.</p>
-							<a href="https://klimp.taktfast.no" class="cta-button">Open Klimp</a>
-						</div>
-					</div>
-				</div>
-			</article>
-		</main>
-		<Footer />
-	</body>
+  <body>
+    <Header lang={lang} />
+    <main>
+      <article>
+        <div class="hero-image">
+          {
+            heroImage && (
+              <Image width={1020} height={510} src={heroImage} alt="" />
+            )
+          }
+        </div>
+        <div class="article-card">
+          <div class="prose">
+            <div class="title">
+              {
+                languageLinks.length > 0 && (
+                  <div class="language-switcher">
+                    {languageLinks.map((link) => (
+                      <a
+                        href={link.href}
+                        class={link.locale === lang ? "active" : ""}
+                      >
+                        {link.label}
+                      </a>
+                    ))}
+                  </div>
+                )
+              }
+              <div class="date">
+                <FormattedDate
+                  date={pubDate}
+                  locale={lang === "no" ? "nn-NO" : "en-US"}
+                />
+                {
+                  updatedDate && (
+                    <div class="last-updated-on">
+                      {lastUpdatedLabel}{" "}
+                      <FormattedDate
+                        date={updatedDate}
+                        locale={lang === "no" ? "nn-NO" : "en-US"}
+                      />
+                    </div>
+                  )
+                }
+              </div>
+              <h1>{title}</h1>
+            </div>
+            <slot />
+            <div class="cta-box">
+              <h3>{ctaTitle}</h3>
+              <p>{ctaDescription}</p>
+              <a href="https://klimp.taktfast.no" class="cta-button"
+                >{ctaButton}</a
+              >
+            </div>
+          </div>
+        </div>
+      </article>
+    </main>
+    <Footer />
+  </body>
 </html>
