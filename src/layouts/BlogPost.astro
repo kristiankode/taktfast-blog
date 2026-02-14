@@ -26,28 +26,37 @@ const { title, description, pubDate, updatedDate, heroImage } = Astro.props;
 			.hero-image img {
 				display: block;
 				margin: 0 auto;
-				border-radius: 12px;
-				box-shadow: var(--box-shadow);
+				border-radius: 16px;
 			}
-			.prose {
+			.article-card {
 				width: 720px;
 				max-width: calc(100% - 2em);
-				margin: auto;
-				padding: 1em;
-				color: rgb(var(--gray-dark));
+				margin: 2em auto;
+				padding: 2em;
+				background: var(--glass-bg-strong);
+				backdrop-filter: var(--glass-blur);
+				-webkit-backdrop-filter: var(--glass-blur);
+				border: 1px solid var(--glass-border);
+				border-radius: 16px;
+				box-shadow: var(--shadow-sm);
+			}
+			.prose {
+				color: rgba(15, 23, 42, 1);
 			}
 			.title {
-				margin-bottom: 1em;
-				padding: 1em 0;
+				margin-bottom: 1.5em;
+				padding: 0 0 1em 0;
 				text-align: center;
 				line-height: 1;
+				border-bottom: 1px solid var(--border-subtle);
 			}
 			.title h1 {
 				margin: 0 0 0.5em 0;
 			}
 			.date {
 				margin-bottom: 0.5em;
-				color: rgb(var(--gray));
+				color: rgba(71, 85, 105, 1);
+				font-size: 0.9em;
 			}
 			.last-updated-on {
 				font-style: italic;
@@ -55,32 +64,45 @@ const { title, description, pubDate, updatedDate, heroImage } = Astro.props;
 			.cta-box {
 				margin-top: 3em;
 				padding: 2em;
-				background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-				border-radius: 12px;
+				background: var(--glass-bg);
+				backdrop-filter: var(--glass-blur);
+				-webkit-backdrop-filter: var(--glass-blur);
+				border: 1px solid var(--border-card);
+				border-radius: 16px;
 				text-align: center;
-				color: white;
 			}
 			.cta-box h3 {
-				color: white;
-				margin-bottom: 0.5em;
+				margin-bottom: 0.3em;
 			}
 			.cta-box p {
+				color: rgba(71, 85, 105, 1);
 				margin-bottom: 1.5em;
-				opacity: 0.9;
 			}
 			.cta-button {
 				display: inline-block;
-				padding: 0.8em 2em;
-				background: white;
-				color: #667eea;
-				font-weight: 700;
-				border-radius: 8px;
+				padding: 10px 24px;
+				background: var(--glass-bg);
+				backdrop-filter: var(--glass-blur);
+				-webkit-backdrop-filter: var(--glass-blur);
+				border: 1px solid var(--border-card);
+				color: rgba(15, 23, 42, 1);
+				font-weight: 600;
+				border-radius: 999px;
 				text-decoration: none;
-				font-size: 1.1em;
+				font-size: 1em;
+				transition: all 0.15s ease;
 			}
 			.cta-button:hover {
-				background: #f0f0f0;
-				color: #764ba2;
+				background: var(--glass-bg-strong);
+				border-color: var(--accent-focus);
+				box-shadow: var(--shadow-md);
+				color: rgba(15, 23, 42, 1);
+			}
+			@media (max-width: 720px) {
+				.article-card {
+					margin: 1em auto;
+					padding: 1.25em;
+				}
 			}
 		</style>
 	</head>
@@ -92,26 +114,27 @@ const { title, description, pubDate, updatedDate, heroImage } = Astro.props;
 				<div class="hero-image">
 					{heroImage && <Image width={1020} height={510} src={heroImage} alt="" />}
 				</div>
-				<div class="prose">
-					<div class="title">
-						<div class="date">
-							<FormattedDate date={pubDate} />
-							{
-								updatedDate && (
-									<div class="last-updated-on">
-										Last updated on <FormattedDate date={updatedDate} />
-									</div>
-								)
-							}
+				<div class="article-card">
+					<div class="prose">
+						<div class="title">
+							<div class="date">
+								<FormattedDate date={pubDate} />
+								{
+									updatedDate && (
+										<div class="last-updated-on">
+											Last updated on <FormattedDate date={updatedDate} />
+										</div>
+									)
+								}
+							</div>
+							<h1>{title}</h1>
 						</div>
-						<h1>{title}</h1>
-						<hr />
-					</div>
-					<slot />
-					<div class="cta-box">
-						<h3>Ready to try it yourself?</h3>
-						<p>Create chord charts in seconds with Klimp — free, no signup required.</p>
-						<a href="https://klimp.taktfast.no" class="cta-button">Open Klimp</a>
+						<slot />
+						<div class="cta-box">
+							<h3>Ready to try it yourself?</h3>
+							<p>Create chord charts in seconds with Klimp — free, no signup required.</p>
+							<a href="https://klimp.taktfast.no" class="cta-button">Open Klimp</a>
+						</div>
 					</div>
 				</div>
 			</article>
